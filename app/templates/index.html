@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Generate Instrument Labels</title>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"
+            defer></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+          rel="stylesheet">
+</head>
+<body>
+<header class="py-4 px-12 bg-indigo-600 text-white shadow-xl flex justify-center">
+    <h1 class="text-2xl font-bold tracking-wide">Create Instrument Labels</h1>
+</header>
+<div class="mx-auto shadow rounded max-w-md px-4 py-2 mt-5"
+     x-data="{numbers: [], loading: false, error: '', newNumber: '', prefix: '', start: 100, end: 101}">
+    <div class="font-bold text-red-600 text-lg" x-show="error">
+        <span x-text="error"></span>
+    </div>
+    <h4 class="text-xl font-bold w-full text-center mb-2">Add Number Range</h4>
+    <form>
+        <div class="flex items-end justify-center">
+            <div class="flex flex-col mr-4">
+                <label for="prefix" class="font-bold text-gray-700">Prefix</label>
+                <input type="text" id="prefix" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-12" x-model="prefix">
+            </div>
+            <div class="flex flex-col mr-4">
+                <label for="start" class="font-bold text-gray-700">Start</label>
+                <input type="number" id="start" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16" x-model="start">
+            </div>
+            <div class="flex flex-col mr-4">
+                <label for="end" class="font-bold text-gray-700">End</label>
+                <input type="number" id="end" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16" x-model="end">
+            </div>
+            <div>
+                <button class="px-2 py-2 mx-4 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                        @click.preventDefault="error = checkRangeError(prefix, start, end, numbers); numbers = extendNumbersFromRange(error, prefix, start, end, numbers)"
+                >Add Numbers</button>
+            </div>
+        </div>
+    </form>
+    <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Add Single Number</h4>
+    <form>
+        <div class="flex items-end justify-center">
+            <div class="flex flex-col mr-4">
+                <label for="single-number" class="font-bold text-gray-700">Number</label>
+                <input type="text" id="single-number"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-24" x-model="newNumber">
+            </div>
+            <div>
+                <button class="px-2 py-2 mx-4 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                @click.preventDefault="error = validateNumber(newNumber); numbers = addNumber(error, newNumber, numbers) ">Add Number</button>
+            </div>
+        </div>
+    </form>
+    <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Numbers</h4>
+    <div class="flex flex-wrap mt-2">
+        <template x-for="(number, idx) in numbers" :key="idx">
+            <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500" x-text="number" title="Remove Number"
+            @click.preventDefault="numbers = removeNumber(number, numbers)"></button>
+        </template>
+    </div>
+    <div class="flex justify-end mt-4">
+        <button class="bg-blue-500 text-white mx-2 px-4 py-2 rounded shadow hover:bg-blue-600 hover:shadow-lg" @click="loading = true;submit(numbers)">
+            Submit
+        </button>
+        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 hover:shadow-lg" @click="loading = false;numbers = []">
+            Reset
+        </button>
+    </div>
+</div>
+
+</body>
+<script>
+    function submit(numbers) {
+        fetch('/labels', {
+            method: 'POST', headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                numbers
+            })
+        }).then(res => res.blob()).then(data => {
+            console.log(data)
+            const el = document.createElement('a')
+            el.href = URL.createObjectURL(data)
+            el.setAttribute('download', 'labels.pdf')
+            el.style.display = 'none';
+            document.body.appendChild(el)
+
+            el.click();
+
+            document.body.removeChild(el);
+        })
+    }
+
+    function checkRangeError(prefix, start, end) {
+        if (prefix.length < 1) {
+            return 'Prefix is required for range'
+        }
+        if (start < 100) {
+            return 'Three Digit start is required for range'
+        }
+        if (end <= start) {
+            return 'End must be greater than start'
+        }
+        return ''
+    }
+
+    function extendNumbersFromRange(error, prefix, start, end, numbers) {
+        if (error) {
+            return numbers;
+        }
+        for (let i = start; i <= end; i++) {
+            numbers.push(`${prefix}-${i}`);
+        }
+        return Array.from(new Set(numbers));
+    }
+
+    function validateNumber(number) {
+        return number.match(/\w?\d+-\d+/) ? null : 'Invalid number';
+    }
+
+    function addNumber(error, number, numbers) {
+        if (error) {
+            return numbers;
+        }
+        numbers.push(number);
+        return Array.from(new Set(numbers));
+    }
+
+    function removeNumber(number, numbers) {
+        return numbers.filter(num => num !== number)
+    }
+</script>
+</html>
