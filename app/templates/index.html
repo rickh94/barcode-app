@@ -15,60 +15,71 @@
 <header class="py-4 px-12 bg-indigo-600 text-white shadow-xl flex justify-center">
     <h1 class="text-2xl font-bold tracking-wide">Create Instrument Labels</h1>
 </header>
-<div class="mx-auto shadow rounded max-w-md px-4 py-2 mt-5"
+<div class="mx-auto shadow rounded max-w-md p-2 mt-5"
      x-data="{numbers: [], loading: false, error: '', newNumber: '', prefix: '', start: 100, end: 101}">
     <div class="font-bold text-red-600 text-lg" x-show="error">
         <span x-text="error"></span>
     </div>
-    <h4 class="text-xl font-bold w-full text-center mb-2">Add Number Range</h4>
-    <form>
+    <h4 class="text-xl font-bold w-full text-center my-2">Add Number Range</h4>
+    <form action="#" @submit="() => {}">
         <div class="flex items-end justify-center">
             <div class="flex flex-col mr-4">
                 <label for="prefix" class="font-bold text-gray-700">Prefix</label>
-                <input type="text" id="prefix" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-12" x-model="prefix">
+                <input type="text" id="prefix" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-12 shadow-sm focus:shadow"
+                       x-model="prefix">
             </div>
             <div class="flex flex-col mr-4">
                 <label for="start" class="font-bold text-gray-700">Start</label>
-                <input type="number" id="start" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16" x-model="start">
+                <input type="number" id="start" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow"
+                       x-model="start">
             </div>
             <div class="flex flex-col mr-4">
                 <label for="end" class="font-bold text-gray-700">End</label>
-                <input type="number" id="end" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16" x-model="end">
+                <input type="number" id="end" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow" x-model="end">
             </div>
             <div>
-                <button class="px-2 py-2 mx-4 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-2 py-2  bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="error = checkRangeError(prefix, start, end, numbers); numbers = extendNumbersFromRange(error, prefix, start, end, numbers)"
                 >Add Numbers</button>
             </div>
         </div>
     </form>
     <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Add Single Number</h4>
-    <form>
+    <form action="#" @submit="() => {}">
         <div class="flex items-end justify-center">
             <div class="flex flex-col mr-4">
                 <label for="single-number" class="font-bold text-gray-700">Number</label>
                 <input type="text" id="single-number"
-                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-24" x-model="newNumber">
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-20 shadow-sm focus:shadow" x-model="newNumber">
             </div>
             <div>
-                <button class="px-2 py-2 mx-4 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
-                @click.preventDefault="error = validateNumber(newNumber); numbers = addNumber(error, newNumber, numbers) ">Add Number</button>
+                <button class="px-2 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                @click.preventDefault="error = validateNumber(newNumber); numbers = addNumber(error, newNumber, numbers) "
+                >Add Number</button>
             </div>
         </div>
     </form>
-    <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Numbers</h4>
+    <div class="flex flex-col justify-center items-center w-full mt-4 mb-2" x-show="numbers.length > 0">
+        <h4 class="text-xl font-bold w-full text-center">Numbers</h4>
+        <p class="text-gray-600 italic">Click to remove</p>
+    </div>
     <div class="flex flex-wrap mt-2">
         <template x-for="(number, idx) in numbers" :key="idx">
             <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500" x-text="number" title="Remove Number"
             @click.preventDefault="numbers = removeNumber(number, numbers)"></button>
         </template>
     </div>
-    <div class="flex justify-end mt-4">
-        <button class="bg-blue-500 text-white mx-2 px-4 py-2 rounded shadow hover:bg-blue-600 hover:shadow-lg" @click="loading = true;submit(numbers)">
-            Submit
-        </button>
-        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 hover:shadow-lg" @click="loading = false;numbers = []">
+    <div class="flex justify-end mt-4 font-bold text-lg" x-show="loading">
+        Generating Labels, please wait...
+    </div>
+    <div class="flex justify-end mt-4" x-show="!loading">
+        <button class="bg-red-500 text-white mr-2 px-4 py-2 rounded hover:bg-red-600 hover:shadow-lg"
+                @click="loading = false;numbers = []" title="Clear Numbers">
             Reset
+        </button>
+        <button class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 hover:shadow-lg"
+                @click="loading = true;submit(numbers); loading = false" title="Generate Labels">
+            Submit
         </button>
     </div>
 </div>
