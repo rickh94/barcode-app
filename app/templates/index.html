@@ -59,16 +59,6 @@
             </div>
         </div>
     </form>
-    <div class="flex flex-col justify-center items-center w-full mt-4 mb-2" x-show="numbers.length > 0">
-        <h4 class="text-xl font-bold w-full text-center">Numbers</h4>
-        <p class="text-gray-600 italic">Click to remove</p>
-    </div>
-    <div class="flex flex-wrap mt-2">
-        <template x-for="(number, idx) in numbers" :key="idx">
-            <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500" x-text="number" title="Remove Number"
-            @click.preventDefault="numbers = removeNumber(number, numbers)"></button>
-        </template>
-    </div>
     <div class="flex justify-end mt-4 font-bold text-lg" x-show="loading">
         Generating Labels, please wait...
     </div>
@@ -78,24 +68,38 @@
             Reset
         </button>
         <button class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 hover:shadow-lg"
-                @click="loading = true;submit(numbers); loading = false" title="Generate Labels">
+                @click="loading = true;submit(numbers).then(() => {loading = false})" title="Generate Labels">
             Submit
         </button>
+    </div>
+    <div x-show="numbers.length > 0">
+        <div class="flex flex-col justify-center items-center w-full mt-4 mb-2">
+            <h4 class="text-xl font-bold w-full text-center">Numbers</h4>
+            <p class="text-gray-600 italic">Click to remove</p>
+        </div>
+        <div class="flex flex-wrap mt-4">
+            <template x-for="(number, idx) in numbers" :key="idx">
+                <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500" x-text="number" title="Remove Number"
+                        @click.preventDefault="numbers = removeNumber(number, numbers)"></button>
+            </template>
+        </div>
     </div>
 </div>
 
 </body>
 <script>
-    function submit(numbers) {
-        fetch('/labels', {
-            method: 'POST', headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                numbers
-            })
-        }).then(res => res.blob()).then(data => {
-            console.log(data)
+    async function submit(numbers) {
+        try {
+            const res = await fetch('/labels', {
+                method: 'POST', headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    numbers
+                })
+            });
+            const data = await res.blob();
+
             const el = document.createElement('a')
             el.href = URL.createObjectURL(data)
             el.setAttribute('download', 'labels.pdf')
@@ -105,7 +109,9 @@
             el.click();
 
             document.body.removeChild(el);
-        })
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     function checkRangeError(prefix, start, end) {
