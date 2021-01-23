@@ -13,8 +13,5 @@ RUN pipenv install --system --deploy
 ADD ./app /app/app
 WORKDIR /app/app
 RUN mkdir /output
-RUN useradd --system app
 
-USER app
-
-CMD gunicorn -w4 -b "0.0.0.0:8157" main:app
+CMD gunicorn -w4 -b "$HOST:$PORT" main:app

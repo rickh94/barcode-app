@@ -4,5 +4,7 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="jdk" jdkName="Python 3.9 (barcode-app-jL9Gn2yi)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="@ryangjchandler/spruce" level="application" />
+    <orderEntry type="library" name="alpine" level="application" />
   </component>
 </module>

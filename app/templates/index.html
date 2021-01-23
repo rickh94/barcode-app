@@ -6,8 +6,6 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Generate Instrument Labels</title>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"
-            defer></script>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
           rel="stylesheet">
 </head>
@@ -15,71 +13,84 @@
 <header class="py-4 px-12 bg-indigo-600 text-white shadow-xl flex justify-center">
     <h1 class="text-2xl font-bold tracking-wide">Create Instrument Labels</h1>
 </header>
-<div class="mx-auto shadow rounded max-w-md p-2 mt-5"
-     x-data="{numbers: [], loading: false, error: '', newNumber: '', prefix: '', start: 100, end: 101}">
-    <div class="font-bold text-red-600 text-lg" x-show="error">
-        <span x-text="error"></span>
+<div class="mx-auto shadow rounded max-w-md p-2 mt-5">
+    <div class="font-bold text-red-600 text-lg" x-data x-show="$store.global.error">
+        <span x-data x-text="$store.global.error"></span>
     </div>
     <h4 class="text-xl font-bold w-full text-center my-2">Add Number Range</h4>
-    <form action="#" @submit="() => {}">
+    <form id="form1" x-data="{prefix: '', start: 100, end: 101}">
         <div class="flex items-end justify-center">
             <div class="flex flex-col mr-4">
                 <label for="prefix" class="font-bold text-gray-700">Prefix</label>
-                <input type="text" id="prefix" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-12 shadow-sm focus:shadow"
+                <input type="text" id="prefix"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-12 shadow-sm focus:shadow"
                        x-model="prefix">
             </div>
             <div class="flex flex-col mr-4">
                 <label for="start" class="font-bold text-gray-700">Start</label>
-                <input type="number" id="start" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow"
+                <input type="number" id="start"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow"
                        x-model="start">
             </div>
             <div class="flex flex-col mr-4">
                 <label for="end" class="font-bold text-gray-700">End</label>
-                <input type="number" id="end" class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow" x-model="end">
+                <input type="number" id="end"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow"
+                       x-model="end">
             </div>
             <div>
                 <button class="px-2 py-2  bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
-                        @click.preventDefault="error = checkRangeError(prefix, start, end, numbers); numbers = extendNumbersFromRange(error, prefix, start, end, numbers)"
-                >Add Numbers</button>
+                        @click.preventDefault="extendNumbersFromRange(prefix, start, end)"
+                >Add Numbers
+                </button>
             </div>
         </div>
     </form>
     <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Add Single Number</h4>
-    <form action="#" @submit="() => {}">
+    <form id="form2" x-data="{newNumber: ''}">
         <div class="flex items-end justify-center">
             <div class="flex flex-col mr-4">
-                <label for="single-number" class="font-bold text-gray-700">Number</label>
+                <label for="single-number"
+                       class="font-bold text-gray-700">Number</label>
                 <input type="text" id="single-number"
-                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-20 shadow-sm focus:shadow" x-model="newNumber">
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-20 shadow-sm focus:shadow"
+                       x-model="newNumber"
+                       @keydown.enter.preventDefault="addNumber(newNumber); newNumber = ''">
             </div>
             <div>
                 <button class="px-2 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
-                @click.preventDefault="error = validateNumber(newNumber); numbers = addNumber(error, newNumber, numbers) "
-                >Add Number</button>
+                        @click.preventDefault="addNumber(newNumber); newNumber = ''"
+                >Add Number
+                </button>
             </div>
         </div>
     </form>
-    <div class="flex justify-end mt-4 font-bold text-lg" x-show="loading">
+    <div class="flex justify-end mt-4 font-bold text-lg" x-data
+         x-show="$store.global.loading">
         Generating Labels, please wait...
     </div>
-    <div class="flex justify-end mt-4" x-show="!loading">
+    <div class="flex justify-end mt-4" x-data x-show="!$store.global.loading">
         <button class="bg-red-500 text-white mr-2 px-4 py-2 rounded hover:bg-red-600 hover:shadow-lg"
-                @click="loading = false;numbers = []" title="Clear Numbers">
+                x-data
+                @click="$store.global.loading = false;$store.global.numbers = []"
+                title="Clear Numbers">
             Reset
         </button>
         <button class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600 hover:shadow-lg"
-                @click="loading = true;submit(numbers).then(() => {loading = false})" title="Generate Labels">
+                x-data
+                @click="submit().then(() => {})" title="Generate Labels">
             Submit
         </button>
     </div>
-    <div x-show="numbers.length > 0">
+    <div x-data x-show="$store.global.numbers.length > 0">
         <div class="flex flex-col justify-center items-center w-full mt-4 mb-2">
             <h4 class="text-xl font-bold w-full text-center">Numbers</h4>
             <p class="text-gray-600 italic">Click to remove</p>
         </div>
         <div class="flex flex-wrap mt-4">
-            <template x-for="(number, idx) in numbers" :key="idx">
-                <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500" x-text="number" title="Remove Number"
+            <template x-data x-for="(number, idx) in $store.global.numbers" :key="idx">
+                <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500"
+                        x-text="number" title="Remove Number"
                         @click.preventDefault="numbers = removeNumber(number, numbers)"></button>
             </template>
         </div>
@@ -87,15 +98,32 @@
 </div>
 
 </body>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js"
+        defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/spruce@2.x.x/dist/spruce.umd.js"></script>
 <script>
-    async function submit(numbers) {
+    document.getElementById("form1").addEventListener("submit", function(e) {
+        e.preventDefault();
+    });
+    document.getElementById("form2").addEventListener("submit", function(e) {
+        e.preventDefault();
+    });
+    Spruce.store('global', {
+        numbers: [],
+        loading: false,
+        error: null,
+    });
+
+    async function submit() {
+        const globalStore = Spruce.store('global');
+        globalStore.loading = true;
         try {
             const res = await fetch('/labels', {
                 method: 'POST', headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    numbers
+                    numbers: globalStore.numbers,
                 })
             });
             const data = await res.blob();
@@ -112,41 +140,54 @@
         } catch (e) {
             console.error(e);
         }
+        globalStore.loading = false;
     }
 
-    function checkRangeError(prefix, start, end) {
+    function isRangeValid(prefix, start, end) {
+        const globalStore = Spruce.store('global')
         if (prefix.length < 1) {
-            return 'Prefix is required for range'
+            globalStore.error = 'Prefix is required for range'
+            return false;
         }
         if (start < 100) {
-            return 'Three Digit start is required for range'
+            globalStore.error = 'Three Digit start is required for range'
+            return false;
         }
         if (end <= start) {
-            return 'End must be greater than start'
+            globalStore.error = 'End must be greater than start'
+            return false;
         }
-        return ''
+        globalStore.error = null;
+        return true;
     }
 
-    function extendNumbersFromRange(error, prefix, start, end, numbers) {
-        if (error) {
-            return numbers;
+    function extendNumbersFromRange(prefix, start, end) {
+        if (!isRangeValid(prefix, start, end)) {
+            return;
         }
+        const globalStore = Spruce.store('global');
+        const numbers = new Set(globalStore.numbers);
         for (let i = start; i <= end; i++) {
-            numbers.push(`${prefix}-${i}`);
+            numbers.add(`${prefix}-${i}`);
         }
-        return Array.from(new Set(numbers));
+        globalStore.numbers = Array.from(numbers);
     }
 
-    function validateNumber(number) {
-        return number.match(/\w?\d+-\d+/) ? null : 'Invalid number';
+    function isNumberValid(number) {
+        if (number.match(/\w?\d+-\d+/)) {
+            return true
+        }
+        Spruce.store('global').error = 'Invalid Number';
+        return false;
     }
 
-    function addNumber(error, number, numbers) {
-        if (error) {
-            return numbers;
+    function addNumber(number) {
+        if (!isNumberValid(number)) {
+            return;
         }
-        numbers.push(number);
-        return Array.from(new Set(numbers));
+        const numbers = new Set(Spruce.store('global').numbers);
+        numbers.add(number);
+        Spruce.store('global').numbers = Array.from(numbers);
     }
 
     function removeNumber(number, numbers) {
