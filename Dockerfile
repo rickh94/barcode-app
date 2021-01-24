@@ -1,10 +1,8 @@
-FROM python:3.9
+ARG ARCH=
+FROM ${ARCH}python:3.9
 
 RUN pip install pipenv
 RUN pip install gunicorn
-
-RUN apt-get update -y
-RUN apt-get install -y ghostscript
 
 ADD ./Pipfile .
 ADD ./Pipfile.lock .
