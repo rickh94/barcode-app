@@ -91,7 +91,7 @@
             <template x-data x-for="(number, idx) in $store.global.numbers" :key="idx">
                 <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500"
                         x-text="number" title="Remove Number"
-                        @click.preventDefault="numbers = removeNumber(number, numbers)"></button>
+                        @click.preventDefault="removeNumber(number)"></button>
             </template>
         </div>
     </div>
@@ -112,7 +112,7 @@
         numbers: [],
         loading: false,
         error: null,
-    });
+    }, true);
 
     async function submit() {
         const globalStore = Spruce.store('global');
@@ -190,8 +190,9 @@
         Spruce.store('global').numbers = Array.from(numbers);
     }
 
-    function removeNumber(number, numbers) {
-        return numbers.filter(num => num !== number)
+    function removeNumber(number) {
+        const globalStore = Spruce.store('global');
+        globalStore.numbers = globalStore.numbers.filter(num => num !== number);
     }
 </script>
 </html>
