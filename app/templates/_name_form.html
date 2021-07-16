@@ -1,0 +1,38 @@
+<div x-show="page === 'names'">
+    <h4 class="text-xl font-bold w-full text-center mb-2">Add Name</h4>
+    <form id="form3" x-data="{newName: ''}">
+        <div class="flex items-end justify-center">
+            <div class="flex flex-col mr-4">
+                <label for="single-name"
+                       class="font-bold text-gray-700">Name</label>
+                <input type="text" id="single-name"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm shadow-sm focus:shadow"
+                       x-model="newName"
+                       @keydown.enter.preventDefault="addName(newName); newName = ''">
+            </div>
+            <div>
+                <button class="px-4 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                        @click.preventDefault="addName(newName); newName = ''"
+                >Add Name
+                </button>
+            </div>
+        </div>
+    </form>
+    <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Add Multiple Names</h4>
+    <form id="form4" x-data="{newNames: ''}">
+        <div class="flex-col items-end justify-center mx-4">
+            <label for="new-names" class="font-bold text-gray-700">Paste Names on
+                Separate Lines</label>
+            <textarea name="newNames" id="new-names" cols="30" rows="5"
+                      class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-full shadow-sm focus:shadow"
+                      x-model="newNames"
+            ></textarea>
+            <div class="flex justify-center mt-4">
+                <button class="px-8 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                        @click.preventDefault="addMultipleNames(newNames); newNames = ''"
+                >Add Names
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

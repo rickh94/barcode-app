@@ -1,0 +1,50 @@
+<div x-show="page === 'numbers'">
+    <h4 class="text-xl font-bold w-full text-center my-2">Add Number Range</h4>
+    <form id="form1" x-data="{prefix: '', start: 100, end: 101}">
+        <div class="flex items-end justify-center">
+            <div class="flex flex-col mr-4">
+                <label for="prefix" class="font-bold text-gray-700">Prefix</label>
+                <input type="text" id="prefix"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-12 shadow-sm focus:shadow"
+                       x-model="prefix">
+            </div>
+            <div class="flex flex-col mr-4">
+                <label for="start" class="font-bold text-gray-700">Start</label>
+                <input type="number" id="start"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow"
+                       x-model="start">
+            </div>
+            <div class="flex flex-col mr-4">
+                <label for="end" class="font-bold text-gray-700">End</label>
+                <input type="number" id="end"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-16 shadow-sm focus:shadow"
+                       x-model="end">
+            </div>
+            <div>
+                <button class="px-4 py-2  bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                        @click.preventDefault="extendNumbersFromRange(prefix, start, end)"
+                >Add Numbers
+                </button>
+            </div>
+        </div>
+    </form>
+    <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Add Single Number</h4>
+    <form id="form2" x-data="{newNumber: ''}">
+        <div class="flex items-end justify-center">
+            <div class="flex flex-col mr-4">
+                <label for="single-number"
+                       class="font-bold text-gray-700">Number</label>
+                <input type="text" id="single-number"
+                       class="appearance-none px-2 py-1 border border-gray-500 rounded-sm w-20 shadow-sm focus:shadow"
+                       x-model="newNumber"
+                       @keydown.enter.preventDefault="addNumber(newNumber); newNumber = ''">
+            </div>
+            <div>
+                <button class="px-4 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                        @click.preventDefault="addNumber(newNumber); newNumber = ''"
+                >Add Number
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

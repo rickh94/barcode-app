@@ -1,0 +1,10 @@
+<nav class="w-full flex justify-center align-middle">
+    <button class="appearance-none mr-4 hover:text-indigo-800 hover:border-indigo-800"
+            :class="page === 'numbers' ? 'text-indigo-600 font-bold border-b border-indigo-600' : ''"
+            @click="page = 'numbers'">Numbers
+    </button>
+    <div class="text-indigo-600">|</div>
+    <button class="appearance-none ml-4 hover:text-indigo-800 hover:border-indigo-800"
+            :class="page === 'names' ? 'text-indigo-600 font-bold border-b border-indigo-600' : ''"
+            @click="page = 'names'">Names</button>
+</nav>

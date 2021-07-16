@@ -1,0 +1,52 @@
+<script>
+    document.getElementById("form3").addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+    document.getElementById("form4").addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+
+    async function namesSubmit() {
+        const globalStore = Spruce.store('global');
+        globalStore.loading = true;
+        try {
+            const res = await fetch('/name-labels', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    names: globalStore.names,
+                })
+            });
+            const data = await res.blob();
+
+            createPDFforDownload(data, 'name-labels.pdf');
+        } catch (e) {
+            console.error(e);
+        }
+        globalStore.loading = false;
+    }
+
+    function addName(name) {
+        const names = new Set(Spruce.store('global').names);
+        names.add(name);
+        Spruce.store('global').names = Array.from(names);
+    }
+
+    function addMultipleNames(newNames) {
+        const newNameSet = new Set(newNames.split('\n'));
+        const names = new Set(Spruce.store('global').names);
+        newNameSet.forEach((name) => {
+            names.add(name)
+        });
+        Spruce.store('global').names = Array.from(names);
+    }
+
+    function removeName(removeName) {
+        Spruce.store('global').names = Spruce.store('global').names
+            .filter(name => name !== removeName);
+    }
+
+
+</script>

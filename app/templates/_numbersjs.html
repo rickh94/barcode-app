@@ -1,0 +1,80 @@
+<script>
+    document.getElementById("form1").addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+    document.getElementById("form2").addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+
+    async function numberSubmit() {
+        const globalStore = Spruce.store('global');
+        globalStore.loading = true;
+        try {
+            const res = await fetch('/labels', {
+                method: 'POST', headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    numbers: globalStore.numbers,
+                })
+            });
+            const data = await res.blob();
+            createPDFforDownload(data, 'number-labels.pdf')
+        } catch (e) {
+            console.error(e);
+        }
+        globalStore.loading = false;
+    }
+
+    function isRangeValid(prefix, start, end) {
+        const globalStore = Spruce.store('global')
+        if (prefix.length < 1) {
+            globalStore.error = 'Prefix is required for range'
+            return false;
+        }
+        if (start < 100) {
+            globalStore.error = 'Three Digit start is required for range'
+            return false;
+        }
+        if (end <= start) {
+            globalStore.error = 'End must be greater than start'
+            return false;
+        }
+        globalStore.error = null;
+        return true;
+    }
+
+    function extendNumbersFromRange(prefix, start, end) {
+        if (!isRangeValid(prefix, start, end)) {
+            return;
+        }
+        const globalStore = Spruce.store('global');
+        const numbers = new Set(globalStore.numbers);
+        for (let i = start; i <= end; i++) {
+            numbers.add(`${prefix}-${i}`);
+        }
+        globalStore.numbers = Array.from(numbers);
+    }
+
+    function isNumberValid(number) {
+        if (number.match(/\w?\d+-\d+/)) {
+            return true
+        }
+        Spruce.store('global').error = 'Invalid Number';
+        return false;
+    }
+
+    function addNumber(number) {
+        if (!isNumberValid(number)) {
+            return;
+        }
+        const numbers = new Set(Spruce.store('global').numbers);
+        numbers.add(number);
+        Spruce.store('global').numbers = Array.from(numbers);
+    }
+
+    function removeNumber(number) {
+        const globalStore = Spruce.store('global');
+        globalStore.numbers = globalStore.numbers.filter(num => num !== number);
+    }
+</script>
