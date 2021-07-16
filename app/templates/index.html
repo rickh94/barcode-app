@@ -6,14 +6,23 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Generate Instrument Labels</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
           rel="stylesheet">
+    <style>
+        body {
+            font-family: Cabin, sans-serif;
+        }
+    </style>
 </head>
 <body>
 <header class="py-4 px-12 bg-indigo-600 text-white shadow-xl flex justify-center">
     <h1 class="text-2xl font-bold tracking-wide">Create Instrument Labels</h1>
 </header>
 <div class="mx-auto shadow rounded max-w-md p-2 mt-5">
+{#    <nav>Numbers | Names</nav>#}
     <div class="font-bold text-red-600 text-lg" x-data x-show="$store.global.error">
         <span x-data x-text="$store.global.error"></span>
     </div>
@@ -39,7 +48,7 @@
                        x-model="end">
             </div>
             <div>
-                <button class="px-2 py-2  bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-4 py-2  bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="extendNumbersFromRange(prefix, start, end)"
                 >Add Numbers
                 </button>
@@ -58,7 +67,7 @@
                        @keydown.enter.preventDefault="addNumber(newNumber); newNumber = ''">
             </div>
             <div>
-                <button class="px-2 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-4 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="addNumber(newNumber); newNumber = ''"
                 >Add Number
                 </button>
