@@ -30,7 +30,7 @@
 
     function addName(name) {
         const names = new Set(Spruce.store('global').names);
-        names.add(name);
+        names.add(name.replace(/\t+/g, ' ').replace(/\s+/g, ' '))
         Spruce.store('global').names = Array.from(names);
     }
 
@@ -38,7 +38,7 @@
         const newNameSet = new Set(newNames.split('\n'));
         const names = new Set(Spruce.store('global').names);
         newNameSet.forEach((name) => {
-            names.add(name)
+            names.add(name.replace(/\t+/g, ' ').replace(/\s+/g, ' '))
         });
         Spruce.store('global').names = Array.from(names);
     }

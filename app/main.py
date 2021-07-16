@@ -21,7 +21,7 @@ def create_labels():
         abort(400)
 
     output_pdf = turn_labels_into_output(
-        [number_label.make_label(num) for num in numbers]
+        [number_label.make_label(num) for num in sorted(numbers)]
     )
 
     return send_file(output_pdf)
@@ -35,7 +35,7 @@ def create_name_labels():
         abort(400)
 
     output_pdf = turn_labels_into_output(
-        [name_label.make_label(name) for name in names]
+        [name_label.make_label(name) for name in sorted(names)]
     )
 
     return send_file(output_pdf)
