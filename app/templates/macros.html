@@ -1,0 +1,15 @@
+{% macro item_tags(title, eventFunction, store) %}
+  <div class="flex flex-wrap mt-4">
+    <template x-data x-for="item in {{ store }}" :key="`tag-${item.replace(' ', '_')}`">
+      <button
+        class="rounded-lg px-3 py-1 font-bold bg-gray-300 mr-1 my-1 hover:bg-red-300 shadow-sm hover:text-white hover:shadow-lg"
+        x-transition:enter="animate__animated animate__bounceIn animate__faster"
+        x-text="item" title="{{ title }}"
+        @click.preventDefault="{{ eventFunction }}(item)"
+        :id="`tag-${item.replace(' ', '_')}`"
+        :key="`tag-${item.replace(' ', '_')}`"
+      >
+      </button>
+    </template>
+  </div>
+{% endmacro %}

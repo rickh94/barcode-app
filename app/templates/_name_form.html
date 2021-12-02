@@ -1,5 +1,5 @@
 <div x-show="page === 'names'">
-    <h4 class="text-xl font-bold w-full text-center mb-2">Add Name</h4>
+    <h4 class="text-xl font-bold w-full text-center my-2">Add Name</h4>
     <form id="form3" x-data="{newName: ''}">
         <div class="flex items-end justify-center">
             <div class="flex flex-col mr-4">
@@ -11,14 +11,14 @@
                        @keydown.enter.preventDefault="addName(newName); newName = ''">
             </div>
             <div>
-                <button class="px-4 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-4 py-2 font-bold bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="addName(newName); newName = ''"
                 >Add Name
                 </button>
             </div>
         </div>
     </form>
-    <h4 class="text-xl font-bold w-full text-center mb-2 mt-8">Add Multiple Names</h4>
+    <h4 class="text-xl font-bold w-full text-center mb-2 mt-4">Add Multiple Names</h4>
     <form id="form4" x-data="{newNames: ''}">
         <div class="flex-col items-end justify-center mx-4">
             <label for="new-names" class="font-bold text-gray-700">Paste Names on
@@ -28,7 +28,7 @@
                       x-model="newNames"
             ></textarea>
             <div class="flex justify-center mt-4">
-                <button class="px-8 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-8 py-2 font-bold bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="addMultipleNames(newNames); newNames = ''"
                 >Add Names
                 </button>

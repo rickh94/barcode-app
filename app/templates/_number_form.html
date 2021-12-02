@@ -21,7 +21,7 @@
                        x-model="end">
             </div>
             <div>
-                <button class="px-4 py-2  bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-4 py-2 font-bold bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="extendNumbersFromRange(prefix, start, end)"
                 >Add Numbers
                 </button>
@@ -40,7 +40,7 @@
                        @keydown.enter.preventDefault="addNumber(newNumber); newNumber = ''">
             </div>
             <div>
-                <button class="px-4 py-2 bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+                <button class="px-4 py-2 font-bold bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
                         @click.preventDefault="addNumber(newNumber); newNumber = ''"
                 >Add Number
                 </button>

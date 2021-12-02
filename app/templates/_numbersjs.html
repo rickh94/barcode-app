@@ -74,6 +74,11 @@
     }
 
     function removeNumber(number) {
+        const tag = document.getElementById(`tag-${number}`)
+        tag.addEventListener('animationend', () => {
+        })
+        tag.classList.remove('animate__bounceIn')
+        tag.classList.add('animate__bounceOut')
         const globalStore = Spruce.store('global');
         globalStore.numbers = globalStore.numbers.filter(num => num !== number);
     }

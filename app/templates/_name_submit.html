@@ -1,3 +1,4 @@
+{% import "macros.html" as macros %}
 <div x-show="page === 'names'">
     <div class="flex justify-end mt-4" x-data x-show="!$store.global.loading">
         <button class="bg-red-500 text-white mr-2 px-4 py-2 rounded hover:bg-red-600 hover:shadow-lg"
@@ -17,12 +18,7 @@
             <h4 class="text-xl font-bold w-full text-center">Names</h4>
             <p class="text-gray-600 italic">Click to remove</p>
         </div>
-        <div class="flex flex-wrap mt-4">
-            <template x-data x-for="(name, idx) in $store.global.names" :key="idx">
-                <button class="rounded-lg px-4 bg-gray-300 mr-1 my-1 hover:bg-red-500"
-                        x-text="name" title="Remove Name"
-                        @click.preventDefault="removeName(name)"></button>
-            </template>
-        </div>
+      {{ macros.item_tags("Remove Name", "removeName", "$store.global.names") }}
+
     </div>
 </div>

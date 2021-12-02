@@ -3,6 +3,7 @@ from werkzeug.exceptions import abort
 
 import name_label
 import number_label
+import blank_label
 from combine_into_pages import turn_labels_into_output
 
 app = Flask(__name__)
@@ -36,6 +37,15 @@ def create_name_labels():
 
     output_pdf = turn_labels_into_output(
         [name_label.make_label(name) for name in sorted(names)]
+    )
+
+    return send_file(output_pdf)
+
+
+@app.route("/blank-labels/<int:pages>", methods=["GET"])
+def create_blank_labels(pages):
+    output_pdf = turn_labels_into_output(
+        [blank_label.make_label() for _ in range(pages * 12)]
     )
 
     return send_file(output_pdf)

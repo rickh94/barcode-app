@@ -1,0 +1,24 @@
+<div x-show="page === 'blank'">
+  <div x-data="{pageCount: 1}">
+    <h4 class="text-xl font-bold w-full text-center my-2">Create Pages of Blank
+      Labels</h4>
+    <div class="flex items-end justify-center">
+      <div class="flex flex-col mr-4">
+        <label for="pages" class="font-bold text-gray-700">Pages</label>
+        <input
+          type="number"
+          name="pages"
+          id="pages"
+          x-model="pageCount"
+          class="appearance-none px-2 py-1 border border-gray-500 rounded-sm shadow-sm focus:shadow"
+        >
+      </div>
+      <div>
+        <a
+          :href="`/blank-labels/${pageCount}`"
+          class="block px-4 py-2 font-bold bg-indigo-500 shadow hover:bg-indigo-700 hover:shadow-lg rounded text-white"
+        >Get Pages</a>
+      </div>
+    </div>
+  </div>
+</div>
